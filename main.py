@@ -14,7 +14,7 @@ guardrail_service = GuardrailService()
 
 # Ollama configuration
 OLLAMA_URL = "http://localhost:11434/api/generate"
-DEFAULT_MODEL = "llama3.1:latest"
+DEFAULT_MODEL = "qwen2.5-coder:7b"
 
 # 2. Define Prometheus Observability Metrics
 REQUEST_COUNT = Counter(
