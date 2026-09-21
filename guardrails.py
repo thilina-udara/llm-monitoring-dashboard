@@ -32,7 +32,7 @@ class GuardrailService:
     # Regex patterns for identifying sensitive user PII
     PII_PATTERNS = {
         "EMAIL": r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b",
-        "PHONE": r"\b\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}\b",
+        "PHONE": r"(?:\+?\b|\+)\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}\b",
         "CREDIT_CARD": r"\b(?:\d[ -]*?){13,16}\b",
         "SSN": r"\b\d{3}-\d{2}-\d{4}\b",
     }
