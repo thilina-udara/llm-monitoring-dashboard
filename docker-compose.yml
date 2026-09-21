@@ -43,6 +43,22 @@ services:
       - llm-network
     restart: always
 
+  # 4. Google cAdvisor Service (Container CPU, Memory සහ Infrastructure Resource Monitoring)
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: llm-cadvisor
+    ports:
+      - "8080:8080"                      # Host Port 8080 ➔ Container Port 8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - llm-network
+    restart: always
+
 # Custom Container Network: Container සියල්ල එකිනෙක ආරක්ෂිතව සන්නිවේදනය කිරීමට
 networks:
   llm-network:

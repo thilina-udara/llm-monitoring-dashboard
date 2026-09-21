@@ -3,8 +3,13 @@ global:
   evaluation_interval: 15s  # How frequently rules are evaluated
 
 scrape_configs:
+  # 1. Scrape FastAPI Application Metrics (Requests, Injections, Latency)
   - job_name: 'llm_fastapi_app'
     metrics_path: '/metrics'
     static_configs:
-      - targets: ['host.docker.internal:8000']
+      - targets: ['api:8000', 'host.docker.internal:8000']
 
+  # 2. Scrape cAdvisor Infrastructure & Container Resource Metrics (CPU, Memory, Network)
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
