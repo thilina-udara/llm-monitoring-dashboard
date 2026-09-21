@@ -4,6 +4,7 @@ import httpx
 import time
 from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 
+import os
 from guardrails import GuardrailService
 
 # 1. Create our API application
@@ -12,9 +13,9 @@ app = FastAPI(title="LLM Monitoring & Security API")
 # Initialize Guardrail Service
 guardrail_service = GuardrailService()
 
-# Ollama configuration
-OLLAMA_URL = "http://localhost:11434/api/generate"
-DEFAULT_MODEL = "qwen2.5-coder:7b"
+# Ollama configuration (Support environment variables for Docker containers)
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/generate")
+DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "qwen2.5-coder:7b")
 
 # 2. Define Prometheus Observability Metrics
 REQUEST_COUNT = Counter(

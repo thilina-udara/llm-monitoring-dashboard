@@ -1,0 +1,49 @@
+# Docker Compose: අපගේ සමස්ත Multi-Container LLM Stack එක එකම File එකකින් Manage කිරීමට
+services:
+  # 1. FastAPI Application Service (අපගේ Python Security & Metrics API එක)
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: llm-fastapi-api
+    ports:
+      - "8000:8000"                      # Host Port 8000 ➔ Container Port 8000
+    environment:
+      - OLLAMA_URL=http://host.docker.internal:11434/api/generate # Local Ollama එකට Connect වීමට
+      - DEFAULT_MODEL=qwen2.5-coder:1.5b # RAM පාවිච්චිය අඩු සගග Lightweight 1.5B Model එක
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Container එක ඇතුලේ සිට Host Machine එකට Connect වීමට
+    networks:
+      - llm-network
+    restart: always
+
+  # 2. Prometheus Monitoring Service (Metrics Scrape කිරීමට සහ Data Save කිරීමට)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: llm-prometheus
+    ports:
+      - "9090:9090"                      # Host Port 9090 ➔ Container Port 9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml # Host එකේ prometheus.yml එක Container එකට Mount කිරීම
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - llm-network
+    restart: always
+
+  # 3. Grafana Dashboard Service (Metrics Graph/Visuals ලෙස පෙන්වීමට)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: llm-grafana
+    ports:
+      - "3000:3000"                      # Host Port 3000 ➔ Container Port 3000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - llm-network
+    restart: always
+
+# Custom Container Network: Container සියල්ල එකිනෙක ආරක්ෂිතව සන්නිවේදනය කිරීමට
+networks:
+  llm-network:
+    driver: bridge
