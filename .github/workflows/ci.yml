@@ -28,10 +28,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: Run automated test suite (6/6 tests must pass)
+      # Step 4: Run automated test suite with PYTHONPATH set to root
       - name: Run Automated pytest Suite
+        env:
+          PYTHONPATH: .
         run: |
-          pytest -v
+          python -m pytest -v
 
       # Step 5: Validate Docker build
       - name: Build Docker Image
