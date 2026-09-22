@@ -1,24 +1,33 @@
-# 1. Base Image: Python 3.11 official slim image එක භාවිතා කරමු (Lightweight සහ Production-ready)
+# 1. Base Image: Python 3.11 official slim image (Lightweight & Production-ready)
 FROM python:3.11-slim
 
-# 2. Working Directory: Container එක ඇතුළේ අපගේ App එක තිබෙන Folder එක /app ලෙස සකසමු
+# 2. Security Hardening: Create a non-root user and group (Principle of Least Privilege)
+RUN groupadd -g 10001 appgroup && \
+    useradd -u 10001 -g appgroup -s /bin/sh -m appuser
+
+# 3. Working Directory: Set container application directory
 WORKDIR /app
 
-# 3. Environment Variables: Python bytecode files (.pyc) හැදීම නතර කිරීමට සහ Logs ඍජුව Terminal එකට ලබා දීමට
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# 4. Environment Variables: Prevent bytecode compilation and enforce unbuffered logs
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-# 4. Copy Requirements: Docker Cache Layer optimize කිරීමට ප්‍රථමයෙන් requirements.txt පමනක් Copy කරමු
+# 5. Copy Requirements: Optimize layer caching by copying dependencies first
 COPY requirements.txt .
 
-# 5. Install Dependencies: requirements.txt හි ඇති සියලුම Python Libraries Install කරමු
+# 6. Install Dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 6. Copy Source Code: අපගේ Project එකේ ඇති සියලුම Code Files (main.py, guardrails.py) Container එකට Copy කරමු
+# 7. Copy Source Code & Change Directory Ownership to non-root user
 COPY . .
+RUN chown -R appuser:appgroup /app
 
-# 7. Expose Port: FastAPI App එක ධාවනය වන Port 8000 Document කරමු
+# 8. Switch to Non-Root User
+USER appuser
+
+# 9. Expose Port
 EXPOSE 8000
 
-# 8. Startup Command: Container එක Start වන විට Uvicorn Web Server එක ධාවනය වන Command එක
+# 10. Startup Command
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+

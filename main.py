@@ -5,7 +5,11 @@ import time
 from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 
 import os
+from dotenv import load_dotenv
 from guardrails import GuardrailService
+
+# Load environment variables from .env file if available
+load_dotenv()
 
 # 1. Create our API application
 app = FastAPI(title="LLM Monitoring & Security API")
