@@ -252,5 +252,4 @@ docker run --rm -v "${PWD}:/apps" -w /apps -e API_URL=http://host.docker.interna
 ## 👤 Author & License
 
 * **Author**: **Thilina Udara**
-* **Development Workflow**: Follows industry-standard **GitFlow** branching model (`main`, `develop`, feature branches).
 * **License**: This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
