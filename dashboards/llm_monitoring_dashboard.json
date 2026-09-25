@@ -318,7 +318,7 @@
                       "spec": {
                         "editorMode": "code",
                         "expr": "histogram_quantile(0.95, sum(rate(llm_request_duration_seconds_bucket[5m])) by (le))",
-                        "legendFormat": "__auto",
+                        "legendFormat": "P95 Latency (s)",
                         "range": true
                       }
                     },
